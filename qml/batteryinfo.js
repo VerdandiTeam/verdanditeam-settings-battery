@@ -16,6 +16,7 @@ var MAX_PLAUSIBLE_HEALTH_RATIO = 1.3
 var MAX_HEALTH_PERCENT = 110
 var MIN_ESTIMABLE_MILLIAMPS = 5
 var MIN_ESTIMABLE_WATTS = 0.05
+var MAX_REMAINING_CHARGE_LEVEL_MISMATCH = 15
 
 function parseUevent(text) {
     var props = {}
@@ -357,6 +358,20 @@ function batteryPowerW(batteries, currentMa, voltageV, workarounds) {
     return has(reported) ? reported : measured
 }
 
+function agreesWithLevel(chargeMahValue, fullMah, level) {
+    if (!has(level) || !has(fullMah))
+        return true
+    return Math.abs(100 * chargeMahValue / fullMah - level) <= MAX_REMAINING_CHARGE_LEVEL_MISMATCH
+}
+
+function remainingChargeMatchingLevel(batteries, fullMah, level) {
+    return firstValid(batteries, function (s) {
+        return [chargeMah(s.props.CHARGE_NOW), chargeMah(s.props.CHARGE_COUNTER)].filter(function (charge) {
+            return has(charge) && agreesWithLevel(charge, fullMah, level)
+        })[0]
+    })
+}
+
 function driverTime(batteries, nowKey, avgKey) {
     return firstValid(batteries, function (s) {
         var t = num(s.props[nowKey])
@@ -426,10 +441,6 @@ function analyze(supplies, vendorValues, sysfsRoot, codename) {
 
     info.designMah = designCapacityMah(batteries, workarounds)
     info.designWh = firstValid(batteries, function (s) { return energyWh(s.props.ENERGY_FULL_DESIGN) })
-    info.nowMah = firstValid(batteries, function (s) {
-        var now = chargeMah(s.props.CHARGE_NOW)
-        return has(now) ? now : chargeMah(s.props.CHARGE_COUNTER)
-    })
     info.nowWh = firstValid(batteries, function (s) { return energyWh(s.props.ENERGY_NOW) })
 
     var health = (workarounds.chargeFullIsPlaceholder ? null : healthFromChargeFull(batteries, info.designMah, sysfsRoot))
@@ -441,6 +452,8 @@ function analyze(supplies, vendorValues, sysfsRoot, codename) {
         info.fullMah = health.fullMah === undefined ? NaN : health.fullMah
         info.fullWh = health.fullWh === undefined ? NaN : health.fullWh
     }
+
+    info.nowMah = remainingChargeMatchingLevel(batteries, has(info.fullMah) ? info.fullMah : info.designMah, info.level)
 
     info.condition = firstKnownProp(batteries, "HEALTH")
     info.cycleCount = highestCycleCount(batteries, workarounds)

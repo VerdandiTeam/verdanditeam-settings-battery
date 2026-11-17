@@ -57,6 +57,7 @@ Drivers don't follow the ABI consistently, so `batteryinfo.js` assumes nothing:
 | Placeholder text values (G2: `MANUFACTURER=UNKNOWN`) | `Unknown`, `N/A`, `None`, `null` in any case count as empty for manufacturer, model, technology, condition and charge type. The first real value across battery-like supplies wins. |
 | Inputs vs charger ICs (Moto: wireless input `dc` reports 0.047 V; the IC `charger` is TYPE=Unknown, ONLINE=1) | Every online non-battery supply counts. The kind comes from the best-typed one (Wireless/USB*/Mains beat Unknown). Voltage, current and limit fall back across online supplies, and voltages outside 2–25 V are dropped. |
 | Laptop/PinePhone-style energy reporting | ENERGY_* / POWER_NOW supported; capacities then shown in Wh. |
+| `CHARGE_COUNTER` that isn't remaining charge (G2: ~30000 at 88% of 2362 mAh, read as 30 mAh or 30,000 mAh depending on which side of the unit threshold it lands) | `CHARGE_NOW`/`CHARGE_COUNTER` are used only if they agree with `CAPACITY` within 15 points. Otherwise remaining charge is level × full capacity. |
 | Time remaining | Driver's TIME_TO_FULL/EMPTY if present, else linear from smoothed current (EMA, reset when direction changes). Shown with "≈". |
 
 Health priority: `charge_full`≠design → `energy_full`≠design → vendor file → none. With none, the page says the device doesn't report it instead of showing a fake 100%.
