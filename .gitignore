@@ -1,0 +1,4 @@
+RPMS/
+*.swp
+# Jolla stock files, kept locally for diffing only
+original/
