@@ -257,7 +257,7 @@ var DEVICE_WORKAROUNDS = {
         designFromBatteryTypeName: true,
         chargeFullIsPlaceholder: true
     },
-    murray: {
+    pdx225: {
         batteryModelNameIsPlaceholder: true
     },
     thea: {
