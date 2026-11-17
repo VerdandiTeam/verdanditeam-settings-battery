@@ -54,6 +54,7 @@ Drivers don't follow the ABI consistently, so `batteryinfo.js` assumes nothing:
 | `charge_full` copied from design (Xperia 10 IV: 4934000 = 4934000) | Treated as "not measured". Health % is shown only from a value that differs from design, and only if the ratio is between 30 and 130%. |
 | Vendor health outside the ABI | Checked once, polled only if present: `<bat>/age` (Motorola, matches charge_full ratio), `<bat>/fg_asoc` (Samsung), `<bat>/soh`, `state_of_health`, `battery_soh`, `/sys/class/battchg_ext/learned_capacity` (Sony; unit guessed against design, 0 = not learned). |
 | Placeholder cycle counts (Moto `battery`=1, `bms`=689) | Highest value across battery-like supplies. |
+| Placeholder text values (G2: `MANUFACTURER=UNKNOWN`) | `Unknown`, `N/A`, `None`, `null` in any case count as empty for manufacturer, model, technology, condition and charge type. The first real value across battery-like supplies wins. |
 | Inputs vs charger ICs (Moto: wireless input `dc` reports 0.047 V; the IC `charger` is TYPE=Unknown, ONLINE=1) | Every online non-battery supply counts. The kind comes from the best-typed one (Wireless/USB*/Mains beat Unknown). Voltage, current and limit fall back across online supplies, and voltages outside 2–25 V are dropped. |
 | Laptop/PinePhone-style energy reporting | ENERGY_* / POWER_NOW supported; capacities then shown in Wh. |
 | Time remaining | Driver's TIME_TO_FULL/EMPTY if present, else linear from smoothed current (EMA, reset when direction changes). Shown with "≈". |

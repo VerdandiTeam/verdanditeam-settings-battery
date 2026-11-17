@@ -211,8 +211,14 @@ function firstProp(supplies, key) {
     return firstValid(supplies, function (s) { return s.props[key] }, "")
 }
 
+var PLACEHOLDER_VALUES = ["unknown", "n/a", "none", "null"]
+
 function knownOrEmpty(value) {
-    return (value && value !== "Unknown" && value !== "N/A") ? value : ""
+    return (value && PLACEHOLDER_VALUES.indexOf(String(value).toLowerCase()) < 0) ? value : ""
+}
+
+function firstKnownProp(supplies, key) {
+    return firstValid(supplies, function (s) { return knownOrEmpty(s.props[key]) }, "")
 }
 
 var VENDOR_HEALTH_FILES = [
@@ -436,11 +442,11 @@ function analyze(supplies, vendorValues, sysfsRoot, codename) {
         info.fullWh = health.fullWh === undefined ? NaN : health.fullWh
     }
 
-    info.condition = knownOrEmpty(firstProp(batteries, "HEALTH"))
+    info.condition = firstKnownProp(batteries, "HEALTH")
     info.cycleCount = highestCycleCount(batteries, workarounds)
-    info.technology = knownOrEmpty(firstProp(batteries, "TECHNOLOGY"))
-    info.manufacturer = firstProp(batteries, "MANUFACTURER")
-    info.model = workarounds.batteryModelNameIsPlaceholder ? "" : firstProp(batteries, "MODEL_NAME")
+    info.technology = firstKnownProp(batteries, "TECHNOLOGY")
+    info.manufacturer = firstKnownProp(batteries, "MANUFACTURER")
+    info.model = workarounds.batteryModelNameIsPlaceholder ? "" : firstKnownProp(batteries, "MODEL_NAME")
     info.chargeType = knownOrEmpty(primary.props.CHARGE_TYPE)
     info.timeToFullS = driverTime(batteries, "TIME_TO_FULL_NOW", "TIME_TO_FULL_AVG")
     info.timeToEmptyS = driverTime(batteries, "TIME_TO_EMPTY_NOW", "TIME_TO_EMPTY_AVG")
