@@ -257,7 +257,7 @@ var DEVICE_WORKAROUNDS = {
         designFromBatteryTypeName: true,
         chargeFullIsPlaceholder: true
     },
-    pdx225: {
+    xqcc72: {
         batteryModelNameIsPlaceholder: true
     },
     thea: {
