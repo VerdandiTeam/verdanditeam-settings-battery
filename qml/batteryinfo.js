@@ -260,6 +260,12 @@ var DEVICE_WORKAROUNDS = {
     murray: {
         batteryModelNameIsPlaceholder: true
     },
+    thea: {
+        chargeFullIsPlaceholder: true
+    },
+    titan: {
+        chargeFullIsPlaceholder: true
+    },
     pipa: {
         powerFromVoltageTimesCurrent: true,
         cycleCountFromChargeBandCounters: true

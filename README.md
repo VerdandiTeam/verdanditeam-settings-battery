@@ -71,6 +71,7 @@ Fixes that are only right for one device live in `DEVICE_WORKAROUNDS` in `batter
 | `enchilada`, `fajita` | OnePlus 6, 6T | `designFromBatteryTypeName` | `charge_full_design` is 2878000 on both phones, but the batteries are 3300 and 3700 mAh, as `bms` `BATTERY_TYPE` says (`OP_3300mah`, `OP_3700mAh`). Design comes from the mAh figure in `BATTERY_TYPE`. |
 | `enchilada`, `fajita` | OnePlus 6, 6T | `chargeFullIsPlaceholder` | `charge_full` is also 2878000 on both: a kernel constant, not a measurement. Health is shown as not reported. |
 | `murray` | Sony Xperia 10 IV | `batteryModelNameIsPlaceholder` | `MODEL_NAME=MURRAY_BATTERY` is the codename, not a battery model, and nothing else in sysfs names the cell maker (`battchg_ext/batt_id` is only a number). The model name is dropped, so the Manufacturer row is hidden. |
+| `thea`, `titan` | Moto G 2014 LTE, Moto G 2014 | `chargeFullIsPlaceholder` | `charge_full` stays at 2362000 against a 2366000 design (99.8%) on old, well-used batteries, so it isn't a measurement. Health is shown as not reported. |
 | `pipa` | Xiaomi Pad 6 | `powerFromVoltageTimesCurrent` | `POWER_NOW=67753699` while drawing ~2.5 W. Power is V × I instead. |
 | `pipa` | Xiaomi Pad 6 | `cycleCountFromChargeBandCounters` | `CYCLE_COUNT=1` is a placeholder. The average of the Qualcomm per-charge-band `CYCLE_COUNTS` (the figure Qualcomm's driver reports) gives ~150. |
 
